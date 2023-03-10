@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\IndexController;
+use App\Http\Controllers\Admin\PermissionsController;
+use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,12 +14,12 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::middleware(['auth', 'verified', 'role:admin'])->name('admin.')->prefix('admin')->group(function (){
+    Route::get('/', [IndexController::class, 'index'])->name('index');
 
-
-Route::get('/admin', function () {
-    return view('admin.index');
-})->middleware(['auth', 'verified', 'role:admin'])->name('admin.index');
-
+    Route::resource('/roles', RolesController::class);
+    Route::resource('/permissions', PermissionsController::class);
+});
 
 
 
