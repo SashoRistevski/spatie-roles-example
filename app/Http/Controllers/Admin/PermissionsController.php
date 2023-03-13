@@ -24,7 +24,7 @@ class PermissionsController extends Controller
 
     public function store(Request $request) : RedirectResponse
     {
-        $validated = $request->validate(['name' => ['required']]);
+        $validated = $request->validate(['guard_name' => 'web', 'name' => ['required']]);
 
         Permission::create($validated);
         return to_route('admin.permissions.index')->with('message', 'Permission Created successfully');
