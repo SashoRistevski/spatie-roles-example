@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\View\View;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class PermissionsController extends Controller
 {
@@ -17,14 +18,14 @@ class PermissionsController extends Controller
         return view('permissions.index', compact('permissions'));
     }
 
-    public function create() :View
+    public function create(): View
     {
         return \view('permissions.create');
     }
 
-    public function store(Request $request) : RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate(['guard_name' => 'web', 'name' => ['required']]);
+        $validated = $request->validate(['name' => ['required']]);
 
         Permission::create($validated);
         return to_route('admin.permissions.index')->with('message', 'Permission Created successfully');
@@ -32,10 +33,11 @@ class PermissionsController extends Controller
 
     public function edit(Permission $permission): View
     {
-        return view('permissions.edit', compact('permission'));
+        $roles = Role::all();
+        return view('permissions.edit', compact('permission', 'roles'));
     }
 
-    public function update(Request $request, Permission $permission) : RedirectResponse
+    public function update(Request $request, Permission $permission): RedirectResponse
     {
         $validated = $request->validate(['name' => ['required']]);
 
@@ -44,9 +46,28 @@ class PermissionsController extends Controller
         return to_route('admin.permissions.index')->with('message', 'Permission Updated successfully');
     }
 
-    public function destroy(Permission $permission) : RedirectResponse
+    public function destroy(Permission $permission): RedirectResponse
     {
         $permission->delete();
         return back()->with('message', 'Permission Deleted successfully');
+    }
+
+    public function assignRole(Request $request, Permission $permission): RedirectResponse
+    {
+        if ($permission->hasRole($request->role)) {
+            return back()->with('message', 'Role exists.');
+        }
+        $permission->assignRole($request->role);
+        return back()->with('message', 'Role assigned');
+    }
+
+    public function removeRole(Permission $permission, Role $role)
+    {
+        if ($permission->hasRole($role))
+        {
+            $permission->removeRole($role);
+            return back()->with('message', 'Role is removed');
+        }
+        return back()->with('message', 'Role does not exists');
     }
 }
