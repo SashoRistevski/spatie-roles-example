@@ -61,10 +61,9 @@ class PermissionsController extends Controller
         return back()->with('message', 'Role assigned');
     }
 
-    public function removeRole(Permission $permission, Role $role)
+    public function removeRole(Permission $permission, Role $role): RedirectResponse
     {
-        if ($permission->hasRole($role))
-        {
+        if ($permission->hasRole($role)) {
             $permission->removeRole($role);
             return back()->with('message', 'Role is removed');
         }

@@ -42,10 +42,8 @@
                                             <td>
                                                 <div class="flex justify-end">
                                                     <div class="flex space-x-2">
-                                                        <a href=""
+                                                        <a href="{{route('admin.users.show', $user->id)}}"
                                                            class="px-4 py-2 bg-gray-500 hover:bg-gray-700 text-white rounded-md">Roles</a>
-                                                        <a href=""
-                                                           class="px-4 py-2 bg-gray-500 hover:bg-gray-700 text-white rounded-md">Permissions</a>
                                                         <form
                                                             class="px-4 py-2 bg-red-500 hover:bg-red-700 text-white rounded-md"
                                                             method="POST"
